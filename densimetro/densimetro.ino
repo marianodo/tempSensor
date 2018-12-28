@@ -5,7 +5,7 @@
 #include <ArduinoJson.h>
 #include "httpServer.h"
 #include "sensor.h"
-#include "eeprom.h"
+//#include "eeprom.h"
 
 ADC_MODE(ADC_VCC);
 
@@ -53,7 +53,7 @@ void configureWifi(){
   }
 }
 
-void getSleepTimeFromEeprom(){
+/*void getSleepTimeFromEeprom(){
   //Read from eeprom
   const int tmpSleepTime = (int)readEeprom(addresSleepTime);
   if (tmpSleepTime != 0){
@@ -61,7 +61,7 @@ void getSleepTimeFromEeprom(){
     updateSleepTime();
   }
   //else sleepTime = defaultSleepTime ----> line 14
-}
+}*/
 
 void readAttributes(){  
   StaticJsonBuffer<200> jsonBuffer;

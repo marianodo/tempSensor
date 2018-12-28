@@ -1,23 +1,19 @@
 #include "Wire.h"
 #include "math.h"
 
-
 const int MPU_addr=0x68; // I2C address of the MPU-6050
-int cal_int, failedCount; 
+int cal_int; 
 int16_t ax, ay, az, Tmp, gx, gy, gz;
-float gx_cal, gy_cal, gz_cal, ax_cal, ay_cal, az_cal, gyro_roll, gyro_pitch, gyro_yaw, angle_roll, angle_pitch, angle_yaw, Temp, valBat, angle;
-double acc_total_vector, angle_pitch_acc, angle_roll_acc, gyro_roll_input, gyro_pitch_input, gyro_yaw_input, pid_aux;
-unsigned long fastLoopLength;
-unsigned long fastLoopStart = 0;
-int16_t fastLoopTiming;
+float gx_cal, gy_cal, gz_cal, ax_cal, ay_cal, az_cal, gyro_roll, gyro_pitch, gyro_yaw, angle_roll, angle_pitch, angle_yaw, Temp, angle;
+double acc_total_vector, angle_pitch_acc, angle_roll_acc;
 unsigned long int ti, tf,d;
 bool set_gyro_angles;
 
-byte check_I2c(byte addr);
+//byte check_I2c(byte addr);
 
 void initMPU(){
   Wire.begin(4,5);
-  check_I2c(MPU_addr); // Check that there is an MPU
+  //check_I2c(MPU_addr); // Check that there is an MPU //TODO This is an usefull method
  
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x6B); // PWR_MGMT_1 register
@@ -141,9 +137,9 @@ void readMPU(){
 //  Serial.print(angle_pitch_acc); Serial.print(" ");
 //  Serial.print(angle_roll_acc); Serial.print(" ");
 //  Serial.print(acc_total_vector); Serial.print(" ");
-  Serial.print("Temp: "); Serial.print(Temp); Serial.print(" ");
+//  Serial.print("Temp: "); Serial.print(Temp); Serial.print(" ");
   //Serial.print("Pitch: "); Serial.print(angle_pitch); Serial.print(" ");
-  Serial.print("Roll: "); Serial.println(angle_roll);
+//  Serial.print("Roll: "); Serial.println(angle_roll);
 /*  Serial.print("Yaw: "); Serial.println(angle_yaw); 
     
 
@@ -160,13 +156,13 @@ void readMPU(){
   d=tf-ti;
   }
 }
-byte check_I2c(byte addr){
+/*byte check_I2c(byte addr){
   // We are using the return value of
   // the Write.endTransmisstion to see if
   // a device did acknowledge to the address.
-  byte error;
+  
   Wire.beginTransmission(addr);
-  error = Wire.endTransmission();
+  //const byte error = Wire.endTransmission();
    
   if (error == 0){
     Serial.print(" Device Found at 0x");
@@ -176,5 +172,5 @@ byte check_I2c(byte addr){
     Serial.print(" No Device Found at 0x");
     Serial.println(addr,HEX);
   }
-  return error;
-}
+  return Wire.endTransmission();
+}*/

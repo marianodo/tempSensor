@@ -11,30 +11,26 @@ ADC_MODE(ADC_VCC);
 
 #define TOKEN "1EYJsctk80mhN8Ng1XeQ"
 char thingsboardServer[] = "data.senseit.com.ar";
-
+int failedCount;
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
-int status = WL_IDLE_STATUS;
-unsigned long lastSend;
+//int status = WL_IDLE_STATUS; What is this for?
 
-unsigned int defaultSleepTime = 15; //in minutes
-unsigned int sleepTime = defaultSleepTime;
-unsigned long int minToMicroseconds = 60000000;
-unsigned long int sleepTimeInMicroseconds = defaultSleepTime * minToMicroseconds;
+
+unsigned int sleepTime = 15; //15 is defaultSleepTime. Is not in another variable to avoid memory usage
+unsigned long int sleepTimeInMicroseconds = 900000000; //This is 15 * 60000000. 60000000 convert from min to microseconds
 // start reading from the first byte (address 0) of the EEPROM
 int addresSleepTime = 0;
 
 void setup() {
   
-  Serial.begin(115200);
+  //Serial.begin(115200);
   configureWifi();
-  setupEeprom();
-  getSleepTimeFromEeprom();
   readAttributes(); //This might replace sleepTime got it from getSleepTimeFromEeprom
-  Serial.println("Iniciando MPU");
+  //Serial.println("Iniciando MPU");
   initMPU();
-  Serial.print("Calibrando");
+  //Serial.print("Calibrando");
   calibrateMPU();  
   
   //Serial.println(ax_cal);
@@ -42,7 +38,6 @@ void setup() {
 
   
   client.setServer( thingsboardServer, 1883 );
-  lastSend = 0;
 
   if ( !client.connected() ) {
     reconnect();
@@ -53,14 +48,14 @@ void setup() {
 void configureWifi(){
   WiFiManager wifiManager;
   wifiManager.setTimeout(180);
-  if (!wifiManager.autoConnect("SenseIt", "senseit")) {
-    ESP.deepSleep(sleepTimeInMicroseconds); // 900e6 son 900 segundos
+  if (!wifiManager.autoConnect("SenseIt", "senseit1234")) {
+    ESP.deepSleep(sleepTimeInMicroseconds); 
   }
 }
+
 void getSleepTimeFromEeprom(){
   //Read from eeprom
-  const byte read = readEeprom(addresSleepTime);
-  const int tmpSleepTime = (int)read;
+  const int tmpSleepTime = (int)readEeprom(addresSleepTime);
   if (tmpSleepTime != 0){
     sleepTime = tmpSleepTime;
     updateSleepTime();
@@ -75,10 +70,10 @@ void readAttributes(){
   int sleepTimeFromServer = root["shared"]["sleepTime"];
   if (sleepTimeFromServer != 0 && sleepTime != sleepTimeFromServer ){ //If not 0 and are differents, then update variable and mem eeprom
     sleepTime = sleepTimeFromServer;
-    writeEeprom(addresSleepTime,sleepTime);
+    //writeEeprom(addresSleepTime,sleepTime);
     updateSleepTime();
-    Serial.println("Update SleepTime to");
-    Serial.println(sleepTime);
+    //Serial.println("Update SleepTime to");
+    //Serial.println(sleepTime);
   }
 }
 
@@ -100,23 +95,23 @@ void loop() {
 
 void sendData()
 {
-  valBat = ESP.getVcc();
-  Serial.print("Angulo: ");
+  
+  /*Serial.print("Angulo: ");
   Serial.print(angle);
   Serial.print(" cm\t ");
   Serial.print("Battery: ");
   Serial.print(valBat/1065,1);
   Serial.println(" V ");
-
-  String angle = String(angle_roll,1);
-  String battery = String(valBat/1065,1);
+*/
+  const String angle = String(angle_roll,1);
+  const String battery = String(ESP.getVcc()/1065,1);
 
   // Just debug messages
-  Serial.print( "Sending angle and battery level : [" );
+  /*Serial.print( "Sending angle and battery level : [" );
   Serial.print( angle ); Serial.print( "," );
   Serial.print( battery );  
   Serial.print( "]   -> " );
-
+  */
   // Prepare a JSON payload string
   String payload = "{";
   payload += "\"angle\":"; payload += angle; payload += ",";
@@ -128,12 +123,12 @@ void sendData()
   char attributes[100];
   payload.toCharArray( attributes, 100 );
   client.publish( "v1/devices/me/telemetry", attributes );
-  Serial.println( attributes );
+  //Serial.println( attributes );
 
 }
 
 void updateSleepTime(){
-  sleepTimeInMicroseconds = sleepTime * minToMicroseconds;
+  sleepTimeInMicroseconds = sleepTime * 60000000;
 }
 void reconnect() {
   // Loop until we're reconnected

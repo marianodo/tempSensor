@@ -17,7 +17,6 @@ PubSubClient client(wifiClient);
 
 //int status = WL_IDLE_STATUS; What is this for?
 
-
 unsigned int sleepTime = 15; //15 is defaultSleepTime. Is not in another variable to avoid memory usage
 unsigned long int sleepTimeInMicroseconds = 900000000; //This is 15 * 60000000. 60000000 convert from min to microseconds
 // start reading from the first byte (address 0) of the EEPROM
@@ -104,7 +103,7 @@ void sendData()
   Serial.println(" V ");
 */
   const String angle = String(angle_roll,1);
-  const String battery = String(ESP.getVcc()/1065,1);
+  const String battery = String((float)ESP.getVcc()/1065,1);
 
   // Just debug messages
   /*Serial.print( "Sending angle and battery level : [" );

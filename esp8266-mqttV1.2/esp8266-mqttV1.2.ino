@@ -26,9 +26,9 @@ int failedCount;
 //#define WIFI_AP "Fiberteeel WiFi280 2.4GHz"
 //#define WIFI_PASSWORD "01434560492"
 
-#define TOKEN "0KhCbxkJiT61alGgIMhD"
+#define TOKEN "vjZ5jfmwzwsFsMr9gUGO"
 
-char thingsboardServer[] = "www.senseit.com.ar";
+char thingsboardServer[] = "data.senseit.com.ar";
 
 WiFiClient wifiClient;
 
@@ -104,7 +104,7 @@ void TempLoop(void){
 
 void setup()
 {
-//  Serial.begin(115200);
+  //Serial.begin(115200);
 //  delay(10);
   WiFiManager wifiManager;
   wifiManager.setTimeout(180);
@@ -222,7 +222,3 @@ void reconnect() {
     }
   }
 }
-
-
-
-

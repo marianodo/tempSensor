@@ -5,22 +5,21 @@
 #include <ArduinoJson.h>
 #include "httpServer.h"
 #include "sensor.h"
-#include "eeprom.h"
+//#include "eeprom.h"
 
 
 #define TOKEN "vjZ5jfmwzwsFsMr9gUGO"
 
 ADC_MODE(ADC_VCC);
 
-float valBat;
 unsigned int failedCount;
-unsigned int defaultSleepTime = 15; //in minutes
-unsigned int sleepTime = defaultSleepTime;
-unsigned long int minToMicroseconds = 60000000;
-unsigned long int sleepTimeInMicroseconds = defaultSleepTime * minToMicroseconds;
+//int status = WL_IDLE_STATUS; What is this for?
+
+unsigned int sleepTime = 15; //15 is defaultSleepTime. Is not in another variable to avoid memory usage
+unsigned long int sleepTimeInMicroseconds = 900000000; //This is 15 * 60000000. 60000000 convert from min to microseconds
 // start reading from the first byte (address 0) of the EEPROM
 int addresSleepTime = 0;
-int status = WL_IDLE_STATUS;
+
 char thingsboardServer[] = "data.senseit.com.ar"; //Why this is global??
 
 WiFiClient wifiClient;
@@ -30,8 +29,8 @@ void setup()
 {
   Serial.begin(115200);
   configureWifi();
-  setupEeprom();
-  getSleepTimeFromEeprom();
+  //setupEeprom();
+  //getSleepTimeFromEeprom();
   readAttributes(); //This might replace sleepTime got it from getSleepTimeFromEeprom
   SetupDS18B20();
   
@@ -51,12 +50,12 @@ void setup()
 void configureWifi(){
   WiFiManager wifiManager;
   wifiManager.setTimeout(180);
-  if (!wifiManager.autoConnect("SenseIt", "senseit")) {
+  if (!wifiManager.autoConnect("SenseIt", "senseit1234")) {
     ESP.deepSleep(sleepTimeInMicroseconds); // 900e6 son 900 segundos
   }
 }
 
-void getSleepTimeFromEeprom(){
+/*void getSleepTimeFromEeprom(){
   //Read from eeprom
   const byte read = readEeprom(addresSleepTime);
   const int tmpSleepTime = (int)read;
@@ -65,7 +64,7 @@ void getSleepTimeFromEeprom(){
     updateSleepTime();
   }
   //else sleepTime = defaultSleepTime ----> line 14
-}
+}*/
 
 void readAttributes(){  
   StaticJsonBuffer<200> jsonBuffer;
@@ -74,15 +73,15 @@ void readAttributes(){
   int sleepTimeFromServer = root["shared"]["sleepTime"];
   if (sleepTimeFromServer != 0 && sleepTime != sleepTimeFromServer ){ //If not 0 and are differents, then update variable and mem eeprom
     sleepTime = sleepTimeFromServer;
-    writeEeprom(addresSleepTime,sleepTime);
+    //writeEeprom(addresSleepTime,sleepTime);
     updateSleepTime();
-    Serial.println("Update SleepTime to");
-    Serial.println(sleepTime);
+    //Serial.println("Update SleepTime to");
+    //Serial.println(sleepTime);
   }
 }
 
 void updateSleepTime(){
-  sleepTimeInMicroseconds = sleepTime * minToMicroseconds;
+  sleepTimeInMicroseconds = sleepTime * 60000000;
 }
 
 void loop()
@@ -91,18 +90,18 @@ void loop()
 
 void getAndSendTemperatureAndHumidityData()
 {
-  valBat = ESP.getVcc();
-
+  
   // Read temperature as Celsius (the default)
-    float t = tempDev;
+    
   // Check if any reads failed and exit early (to try again).
-    if(isnan(t)){
+    if(isnan(tempDev)){
+      //Serial.println("FALLO");
     return;
   }
 
-  String temperature = String(t);
-  String battery = String(valBat/1065,1);
-
+  String temperature = String(tempDev);
+  String battery = String((float)ESP.getVcc()/1065,1);
+  //Serial.println(battery);
   // Just debug messages
 
   // Prepare a JSON payload string
@@ -115,6 +114,7 @@ void getAndSendTemperatureAndHumidityData()
   char attributes[100];
   payload.toCharArray( attributes, 100 );
   client.publish( "v1/devices/me/telemetry", attributes );
+  //Serial.println(attributes);
 }
 
 

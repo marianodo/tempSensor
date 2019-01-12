@@ -1,7 +1,7 @@
 #include <DNSServer.h>            //Local DNS Server used for redirecting all requests to the configuration portal
 #include <ESP8266WebServer.h>     //Local WebServer used to serve the configuration portal
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
-#include <PubSubClient.h>
+#include <PubSubClient.h>         //https://pubsubclient.knolleary.net/ PubSubClient by Nick O'Leary
 #include <ArduinoJson.h>
 #include "httpServer.h"
 #include "sensor.h"
@@ -9,7 +9,7 @@
 
 ADC_MODE(ADC_VCC);
 
-#define TOKEN "1EYJsctk80mhN8Ng1XeQ"
+#define TOKEN "7rBZ3fOvDXgozS7I8All"
 char thingsboardServer[] = "data.senseit.com.ar";
 int failedCount;
 WiFiClient wifiClient;
@@ -17,16 +17,16 @@ PubSubClient client(wifiClient);
 
 //int status = WL_IDLE_STATUS; What is this for?
 
-unsigned int sleepTime = 15; //15 is defaultSleepTime. Is not in another variable to avoid memory usage
-unsigned long int sleepTimeInMicroseconds = 900000000; //This is 15 * 60000000. 60000000 convert from min to microseconds
-// start reading from the first byte (address 0) of the EEPROM
+unsigned int sleepTime = 15;                              //15 is defaultSleepTime. Is not in another variable to avoid memory usage
+unsigned long int sleepTimeInMicroseconds = 900000000;    //This is 15 * 60000000. 60000000 convert from min to microseconds
+                                                          // start reading from the first byte (address 0) of the EEPROM
 int addresSleepTime = 0;
 
 void setup() {
   
   //Serial.begin(115200);
   configureWifi();
-  readAttributes(); //This might replace sleepTime got it from getSleepTimeFromEeprom
+  readAttributes();                                       //This might replace sleepTime got it from getSleepTimeFromEeprom
   //Serial.println("Iniciando MPU");
   initMPU();
   //Serial.print("Calibrando");

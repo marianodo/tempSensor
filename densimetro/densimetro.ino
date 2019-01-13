@@ -29,12 +29,7 @@ void setup() {
   readAttributes();                                       //This might replace sleepTime got it from getSleepTimeFromEeprom
   //Serial.println("Iniciando MPU");
   initMPU();
-  //Serial.print("Calibrando");
-  calibrateMPU();  
-  
-  //Serial.println(ax_cal);
-  //Serial.println(ay_cal);
-
+  thisTime=micros();
   
   client.setServer( thingsboardServer, 1883 );
 
@@ -102,7 +97,7 @@ void sendData()
   Serial.print(valBat/1065,1);
   Serial.println(" V ");
 */
-  const String angle = String(angle_roll,1);
+  const String angle = String(-angle_roll,1);
   const String battery = String((float)ESP.getVcc()/1065,1);
 
   // Just debug messages

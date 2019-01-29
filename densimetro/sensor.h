@@ -6,7 +6,7 @@ const int MPU_addr=0x68; // I2C address of the MPU-6050
 int cal_int; 
 int16_t ax, ay, az, Tmp, gx, gy, gz;
 float gx_cal, gy_cal, gz_cal, gyro_roll, gyro_pitch, gyro_yaw, angle_roll, angle_pitch, Temp, angle;
-double acc_total_vector, angle_pitch_acc, angle_roll_acc, error_pitch_acc, error_roll_acc;
+double acc_total_vector, angle_pitch_acc, angle_roll_acc;
 unsigned long int d, thisTime, previousTime;
 bool set_gyro_angles=false;
 

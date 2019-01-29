@@ -9,7 +9,7 @@
 
 ADC_MODE(ADC_VCC);
 
-#define TOKEN "7rBZ3fOvDXgozS7I8All"
+#define TOKEN "yqTaN2EM6hYioXKy3T3i"
 char thingsboardServer[] = "data.senseit.com.ar";
 int failedCount;
 WiFiClient wifiClient;

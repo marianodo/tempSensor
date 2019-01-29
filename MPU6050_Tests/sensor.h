@@ -2,7 +2,7 @@
 #include "math.h"
 
 #define TEMP_OFFSET -1600
-#define Z_ACCEL_OFFSET 1000
+#define Z_ACCEL_OFFSET 0
 
 const int MPU_addr=0x68; // I2C address of the MPU-6050
 int cal_int; 
@@ -168,7 +168,10 @@ void readMPU(){
       
     set_gyro_angles=true;
    } 
-  
+   
+//  Serial.print(ax); Serial.print(" ");
+//  Serial.print(ay); Serial.print(" ");
+//  Serial.print(az); Serial.print(" ");
 //  Serial.print(angle_pitch_acc); Serial.print(" ");
 //  Serial.print(angle_roll_acc); Serial.print(" ");
 //  Serial.print("Acc_total_vector= "); Serial.print(acc_total_vector);

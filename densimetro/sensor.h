@@ -6,7 +6,7 @@ const int MPU_addr=0x68; // I2C address of the MPU-6050
 int cal_int; 
 int16_t ax, ay, az, Tmp, gx, gy, gz;
 float gx_cal, gy_cal, gz_cal, gyro_roll, gyro_pitch, gyro_yaw, angle_roll, angle_pitch, Temp, angle;
-double acc_total_vector, angle_pitch_acc, angle_roll_acc, error_pitch_acc, error_roll_acc;
+double acc_total_vector, angle_pitch_acc, angle_roll_acc;
 unsigned long int d, thisTime, previousTime;
 bool set_gyro_angles=false;
 
@@ -30,6 +30,14 @@ void initMPU(){
   Wire.write(0x10);                               // AFS_SEL=2 ==> +/- 8g
   Wire.endTransmission(true);
   delay(10);
+}
+
+void sleepMPU(){
+
+  Wire.beginTransmission(MPU_addr);
+  Wire.write(0x6B); // PWR_MGMT_1 register
+  Wire.write(0x40); // Bit SLEEP = 1, pone el MPU6050 en sleep
+  Wire.endTransmission(true);  
 }
 
 void readMPU(){

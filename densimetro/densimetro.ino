@@ -73,16 +73,9 @@ void readAttributes(){
 
 void loop() {
   readMPU();
-/*
-  Wire.beginTransmission(MPU_addr);
-  Wire.write(0x6B); // PWR_MGMT_1 register
-  Wire.write(0x40); // Bit SLEEP = 1, pone el MPU6050 en sleep
-  Wire.endTransmission(true);
-*/
- 
   sendData();
   client.loop();
-  
+  sleepMPU();
   ESP.deepSleep(sleepTimeInMicroseconds); // 20e6 is 20 microseconds
 }
 

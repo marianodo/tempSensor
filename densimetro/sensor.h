@@ -32,6 +32,14 @@ void initMPU(){
   delay(10);
 }
 
+void sleepMPU(){
+
+  Wire.beginTransmission(MPU_addr);
+  Wire.write(0x6B); // PWR_MGMT_1 register
+  Wire.write(0x40); // Bit SLEEP = 1, pone el MPU6050 en sleep
+  Wire.endTransmission(true);  
+}
+
 void readMPU(){
   
   previousTime=thisTime;
